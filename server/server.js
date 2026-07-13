@@ -20,15 +20,18 @@ app.use(
         "http://localhost:5174",
       ].filter(Boolean);
 
-    
       if (!origin) return cb(null, true);
 
-      if (allowed.includes(origin)) return cb(null, true);
+      const normalizedOrigin = origin.replace(/\/$/, "");
+      const normalizedAllowed = allowed.map((url) => url.replace(/\/$/, ""));
+
+      if (normalizedAllowed.includes(normalizedOrigin)) return cb(null, true);
       return cb(new Error(`Not allowed by CORS: ${origin}`));
     },
     credentials: true,
   })
 );
+
 app.use(express.json());
 
 app.get("/", (req, res) => {
