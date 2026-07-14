@@ -4,6 +4,7 @@ import {
   FaLinkedinIn,
   FaInstagram,
 } from "react-icons/fa";
+import logo from "../assets/furnicraftlogo.png";
 
 const Footer = () => (
   <footer
@@ -16,7 +17,7 @@ const Footer = () => (
         <div className="mb-4 flex items-center gap-3">
           <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-white shadow-md">
             <img
-              src="../src/assets/furnicraftlogo.png"
+              src={logo}
               alt="FurniCraft"
               className="h-full w-full object-cover"
             />

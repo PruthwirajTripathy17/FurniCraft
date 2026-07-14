@@ -213,7 +213,7 @@ export default function AdminCategories() {
         </div>
       )}
 
-      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-900">
+      <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-900">
         <table className="min-w-full divide-y divide-gray-200 text-left text-sm dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>

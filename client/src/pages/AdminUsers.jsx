@@ -71,7 +71,7 @@ export default function AdminUsers() {
       </header>
 
       <div className="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
-        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-900">
+        <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-900">
           <table className="min-w-full divide-y divide-gray-200 text-left text-sm dark:divide-gray-800">
             <thead className="bg-gray-50 dark:bg-gray-800">
               <tr>

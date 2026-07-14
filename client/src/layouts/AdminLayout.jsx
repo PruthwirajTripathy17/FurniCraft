@@ -17,6 +17,8 @@ import {
   FiTrendingUp,
   FiUsers,
   FiShoppingBag,
+  FiMenu,
+  FiX,
 } from "react-icons/fi";
 
 function AdminLayout() {
@@ -29,6 +31,7 @@ function AdminLayout() {
 
   const [notifications, setNotifications] = useState([]);
   const [isNotifDropdownOpen, setIsNotifDropdownOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const loadNotifications = async () => {
     try {
@@ -99,8 +102,30 @@ function AdminLayout() {
 
   return (
     <div className="h-screen overflow-hidden bg-gray-100 dark:bg-gray-950 transition-colors duration-300">
-      <header className="fixed top-0 left-72 right-0 h-16 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm z-40 flex items-center justify-end px-8">
-        <div className="flex items-center gap-3">
+      
+      {/* Mobile Sidebar Backdrop Overlay */}
+      {isSidebarOpen && (
+        <div
+          onClick={() => setIsSidebarOpen(false)}
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-45 lg:hidden transition-opacity duration-300"
+        />
+      )}
+
+      {/* Header */}
+      <header className="fixed top-0 left-0 lg:left-72 right-0 h-16 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm z-40 flex items-center justify-between lg:justify-end px-4 md:px-8">
+        
+        {/* Mobile menu trigger */}
+        <div className="flex items-center gap-3 lg:hidden">
+          <button
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className="p-2 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-indigo-50 dark:hover:bg-gray-800 hover:text-indigo-600 transition-all focus:outline-none"
+          >
+            <FiMenu size={24} />
+          </button>
+          <span className="font-bold text-gray-850 dark:text-white text-sm">FurniCraft Admin</span>
+        </div>
+
+        <div className="flex items-center gap-2 md:gap-3">
           <button
             onClick={toggleTheme}
             className="p-2 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-indigo-50 dark:hover:bg-gray-800 hover:text-indigo-600 transition-all"
@@ -168,73 +193,86 @@ function AdminLayout() {
             <FiSettings size={20} />
           </button>
 
-          <div className="h-8 w-px bg-gray-300 dark:bg-gray-700 mx-2" />
+          <div className="h-8 w-px bg-gray-300 dark:bg-gray-700 mx-1 md:mx-2" />
 
-          <div className="text-right">
-            <p className="font-medium text-gray-800 dark:text-white">
+          <div className="text-right hidden sm:block">
+            <p className="font-medium text-gray-800 dark:text-white text-sm">
               {adminUser?.name || "Admin"}
             </p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
               Administrator
             </p>
           </div>
 
-          <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold">
+          <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold shadow-md">
             {adminUser?.name?.charAt(0)?.toUpperCase() || "A"}
           </div>
         </div>
       </header>
 
-      <aside className="fixed top-0 left-0 w-72 h-screen bg-gray-900 dark:bg-black text-white flex flex-col justify-between border-r border-gray-800 z-50">
+      {/* Sidebar Drawer */}
+      <aside className={`fixed top-0 left-0 w-72 h-screen bg-gray-900 dark:bg-black text-white flex flex-col justify-between border-r border-gray-800 z-50 transition-transform duration-300 lg:translate-x-0 ${
+        isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+      }`}>
         <div>
-          <div className="h-16 flex items-center px-6 gap-3 border-b border-gray-800 bg-gray-900 dark:bg-black">
-            <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-white shadow-md">
-              <img
-                src={logo}
-                alt="FurniCraft"
-                className="h-full w-full object-cover"
-              />
+          <div className="h-16 flex items-center justify-between px-6 border-b border-gray-800 bg-gray-900 dark:bg-black">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-white shadow-md">
+                <img
+                  src={logo}
+                  alt="FurniCraft"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <span className="text-xl font-bold text-white">FurniCraft</span>
             </div>
-            <span className="text-xl font-bold text-white">FurniCraft</span>
+            
+            {/* Sidebar close button for mobile */}
+            <button
+              onClick={() => setIsSidebarOpen(false)}
+              className="lg:hidden p-1.5 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 transition-all focus:outline-none"
+            >
+              <FiX size={22} />
+            </button>
           </div>
 
           <nav className="p-4 space-y-2">
-            <NavLink to="/admin/dashboard" className={navClass}>
+            <NavLink to="/admin/dashboard" className={navClass} onClick={() => setIsSidebarOpen(false)}>
               <FiGrid size={18} />
               Dashboard
             </NavLink>
 
-            <NavLink to="/admin/categories" className={navClass}>
+            <NavLink to="/admin/categories" className={navClass} onClick={() => setIsSidebarOpen(false)}>
               <FiFolder size={18} />
               Category
             </NavLink>
 
-            <NavLink to="/admin/products" className={navClass}>
+            <NavLink to="/admin/products" className={navClass} onClick={() => setIsSidebarOpen(false)}>
               <FiPackage size={18} />
               Products
             </NavLink>
 
-            <NavLink to="/admin/orders" className={navClass}>
+            <NavLink to="/admin/orders" className={navClass} onClick={() => setIsSidebarOpen(false)}>
               <FiShoppingBag size={18} />
               Orders
             </NavLink>
 
-            <NavLink to="/admin/blogs" className={navClass}>
+            <NavLink to="/admin/blogs" className={navClass} onClick={() => setIsSidebarOpen(false)}>
               <FiFileText size={18} />
               Blogs
             </NavLink>
 
-            <NavLink to="/admin/testimonials" className={navClass}>
+            <NavLink to="/admin/testimonials" className={navClass} onClick={() => setIsSidebarOpen(false)}>
               <FiMessageSquare size={18} />
               Testimonials
             </NavLink>
 
-            <NavLink to="/admin/best-sellers" className={navClass}>
+            <NavLink to="/admin/best-sellers" className={navClass} onClick={() => setIsSidebarOpen(false)}>
               <FiTrendingUp size={18} />
               Best Sellers
             </NavLink>
 
-            <NavLink to="/admin/users" className={navClass}>
+            <NavLink to="/admin/users" className={navClass} onClick={() => setIsSidebarOpen(false)}>
               <FiUsers size={18} />
               Users
             </NavLink>
@@ -243,7 +281,10 @@ function AdminLayout() {
 
         <div className="p-4 border-t border-gray-800">
           <button
-            onClick={handleLogout}
+            onClick={() => {
+              setIsSidebarOpen(false);
+              handleLogout();
+            }}
             className="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 py-3 rounded-xl transition-colors"
           >
             <FiLogOut size={18} />
@@ -252,9 +293,10 @@ function AdminLayout() {
         </div>
       </aside>
 
-      <main className="ml-72 pt-16 h-screen overflow-y-auto">
-        <div className="p-8">
-          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm dark:shadow-gray-900/40 p-6 min-h-[calc(100vh-8rem)] transition-colors duration-300">
+      {/* Main Content Area */}
+      <main className="ml-0 lg:ml-72 pt-16 h-screen overflow-y-auto">
+        <div className="p-4 md:p-8">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm dark:shadow-gray-900/40 p-4 md:p-6 min-h-[calc(100vh-8rem)] transition-colors duration-300">
             <Outlet />
           </div>
         </div>
