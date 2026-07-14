@@ -1,14 +1,16 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../context/auth-context";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
-import { FiMail, FiLock, FiAlertTriangle } from "react-icons/fi";
+import { FiMail, FiLock, FiAlertTriangle, FiUser, FiInfo } from "react-icons/fi";
 
 export default function AdminLogin() {
+  const [mode, setMode] = useState("login");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [authError, setAuthError] = useState("");
 
-  const { isAdminLoggedIn, adminUser, adminLogin, adminLogout } = useContext(AuthContext);
+  const { isAdminLoggedIn, adminUser, adminLogin, adminRegister, adminLogout } = useContext(AuthContext);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -20,13 +22,21 @@ export default function AdminLogin() {
     return <Navigate to={from} replace />;
   }
 
+  const isRegister = mode === "register";
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setAuthError("");
 
     try {
-      const data = await adminLogin(email, password);
-      const loggedUser = data?.user;
+      let loggedUser;
+      if (isRegister) {
+        const data = await adminRegister(name, email, password);
+        loggedUser = data?.user;
+      } else {
+        const data = await adminLogin(email, password);
+        loggedUser = data?.user;
+      }
 
       if (loggedUser?.role !== "admin") {
         setAuthError("Access denied: You do not have administrator permissions.");
@@ -57,9 +67,11 @@ export default function AdminLogin() {
         <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-8 border border-zinc-100">
           <div className="mb-8 text-center">
             <h2 className="text-3xl font-black text-zinc-900">
-              Admin Panel
+              {isRegister ? "Register Admin" : "Admin Panel"}
             </h2>
-            <p className="text-zinc-500 mt-2">Sign in with administrator credentials</p>
+            <p className="text-zinc-500 mt-2">
+              {isRegister ? "Create a new administrator account" : "Sign in with administrator credentials"}
+            </p>
           </div>
 
           {authError && (
@@ -70,6 +82,20 @@ export default function AdminLogin() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            {isRegister && (
+              <div className="relative">
+                <FiUser className="absolute left-4 top-4 text-zinc-400" />
+                <input
+                  type="text"
+                  placeholder="Full Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  className="w-full pl-12 pr-4 py-3.5 border rounded-xl focus:ring-2 focus:ring-brand-brown outline-none transition-all"
+                />
+              </div>
+            )}
+
             <div className="relative">
               <FiMail className="absolute left-4 top-4 text-zinc-400" />
               <input
@@ -94,13 +120,32 @@ export default function AdminLogin() {
               />
             </div>
 
+            {isRegister && (
+              <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-xl text-amber-900 text-xs flex gap-2.5 items-start leading-relaxed">
+                <FiInfo className="flex-shrink-0 mt-0.5 text-amber-700" size={16} />
+                <span>
+                  <strong>Note:</strong> Your email address must contain the word <strong>"admin"</strong> (e.g. <em>admin.jane@furnicraft.com</em>) and the system must have fewer than 5 registered administrators.
+                </span>
+              </div>
+            )}
+
             <button
               type="submit"
               className="w-full bg-zinc-900 hover:bg-zinc-800 text-white py-3.5 rounded-xl font-bold tracking-wide transition shadow-md active:scale-98"
             >
-              Access Console
+              {isRegister ? "Register Admin" : "Access Console"}
             </button>
           </form>
+
+          <button
+            onClick={() => {
+              setMode(isRegister ? "login" : "register");
+              setAuthError("");
+            }}
+            className="w-full mt-6 text-zinc-600 hover:text-zinc-900 font-bold text-sm text-center block transition-colors"
+          >
+            {isRegister ? "Already have an admin account? Sign In" : "Register a new admin account"}
+          </button>
         </div>
       </div>
     </div>
